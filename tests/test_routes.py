@@ -38,6 +38,7 @@ BASE_URL = "/products"
 ######################################################################
 #  P R O D U C T   A P I   S E R V I C E   T E S T   C A S E S
 ######################################################################
+# pylint: disable=too-many-public-methods
 class TestProductRoutes(unittest.TestCase):
     """Test Cases for Product API Service"""
 
@@ -235,3 +236,37 @@ class TestProductRoutes(unittest.TestCase):
         """It should not allow an illegal method call"""
         response = self.client.put(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_create_product_no_content_type(self):
+        """It should not create a Product without Content-Type"""
+        response = self.client.post(BASE_URL, json={})
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST
+        )
+
+    def test_create_product_bad_content_type(self):
+        """It should not create a Product with bad Content-Type"""
+        response = self.client.post(
+            BASE_URL, json={}, content_type="text/plain"
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        )
+
+    def test_create_product_invalid_content_type(self):
+        """It should not create a Product with an invalid Content-Type"""
+        response = self.client.post(
+            BASE_URL,
+            json={"name": "Test"},
+            content_type="text/html"
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        )
+
+    def test_create_product_no_header_content_type(self):
+        """It should not create a Product with no Content-Type header"""
+        response = self.client.post(BASE_URL, data="not json")
+        self.assertEqual(
+            response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+        )

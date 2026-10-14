@@ -60,62 +60,60 @@ Scenario: Update a Product
     And I set the "Name" to "Hat"
     And I press the "Search" button
     Then I should see the message "Success"
-    When I copy the "Id" field
-    And I press the "Clear" button
-    And I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message "Success"
-    When I change the "Name" to "Fedora"
-    And I change the "Description" to "A blue fedora"
-    And I change the "Price" to "39.95"
+    And I should see "A red fedora" in the "Description" field
+    When I change "Name" to "Fedora"
     And I press the "Update" button
     Then I should see the message "Success"
-    When I press the "Clear" button
+    When I copy the "Id" field
+    And I press the "Clear" button
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
     And I should see "Fedora" in the "Name" field
-    And I should see "A blue fedora" in the "Description" field
-    And I should see "39.95" in the "Price" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Fedora" in the results
+    And I should not see "Hat" in the results
 
 Scenario: Delete a Product
     When I visit the "Home Page"
-    And I set the "Name" to "Big Mac"
+    And I set the "Name" to "Hat"
     And I press the "Search" button
     Then I should see the message "Success"
+    And I should see "A red fedora" in the "Description" field
     When I copy the "Id" field
     And I press the "Clear" button
     And I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message "Success"
-    When I press the "Delete" button
+    And I press the "Delete" button
     Then I should see the message "Product has been Deleted!"
     When I press the "Clear" button
-    And I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message "Not Found"
-
-Scenario: List all Products
-    When I visit the "Home Page"
-    And I press the "Clear" button
     And I press the "Search" button
-    Then I should see "Hat" in the results
-    And I should see "Shoes" in the results
-    And I should see "Big Mac" in the results
-    And I should see "Sheets" in the results
+    Then I should see the message "Success"
+    And I should not see "Hat" in the results
 
-Scenario: Search for Products by Category
+Scenario: List all products
     When I visit the "Home Page"
     And I press the "Clear" button
-    And I select "Cloths" in the "Category" dropdown
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Hat" in the results
     And I should see "Shoes" in the results
-    And I should not see "Big Mac" in the results
+    And I should see "Big Mac" in the results
+    And I should see "Sheets" in the results
+
+Scenario: Search by category
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I select "Food" in the "Category" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Big Mac" in the results
+    And I should not see "Hat" in the results
+    And I should not see "Shoes" in the results
     And I should not see "Sheets" in the results
 
-Scenario: Search for Products by Availability
+Scenario: Search by available
     When I visit the "Home Page"
     And I press the "Clear" button
     And I select "True" in the "Available" dropdown
@@ -126,13 +124,10 @@ Scenario: Search for Products by Availability
     And I should see "Sheets" in the results
     And I should not see "Shoes" in the results
 
-Scenario: Search for Products by Name
+Scenario: Search by name
     When I visit the "Home Page"
-    And I press the "Clear" button
     And I set the "Name" to "Hat"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Hat" in the results
-    And I should not see "Shoes" in the results
-    And I should not see "Big Mac" in the results
-    And I should not see "Sheets" in the results
+    And I should see "Hat" in the "Name" field
+    And I should see "A red fedora" in the "Description" field
