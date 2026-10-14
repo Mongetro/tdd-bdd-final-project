@@ -40,15 +40,18 @@ def step_impl(context):
     # Uncomment next line to take a screenshot of the web page
     # context.driver.save_screenshot('home_page.png')
 
+
 @then('I should see "{message}" in the title')
 def step_impl(context, message):
     """ Check the document title for a message """
-    assert(message in context.driver.title)
+    assert message in context.driver.title
+
 
 @then('I should not see "{text_string}"')
 def step_impl(context, text_string):
     element = context.driver.find_element(By.TAG_NAME, 'body')
-    assert(text_string not in element.text)
+    assert text_string not in element.text
+
 
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
@@ -57,23 +60,27 @@ def step_impl(context, element_name, text_string):
     element.clear()
     element.send_keys(text_string)
 
+
 @when('I select "{text}" in the "{element_name}" dropdown')
 def step_impl(context, text, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = Select(context.driver.find_element(By.ID, element_id))
     element.select_by_visible_text(text)
 
+
 @then('I should see "{text}" in the "{element_name}" dropdown')
 def step_impl(context, text, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = Select(context.driver.find_element(By.ID, element_id))
-    assert(element.first_selected_option.text == text)
+    assert element.first_selected_option.text == text
+
 
 @then('the "{element_name}" field should be empty')
 def step_impl(context, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = context.driver.find_element(By.ID, element_id)
-    assert(element.get_attribute('value') == u'')
+    assert element.get_attribute('value') == u''
+
 
 ##################################################################
 # These two function simulate copy and paste
@@ -87,6 +94,7 @@ def step_impl(context, element_name):
     context.clipboard = element.get_attribute('value')
     logging.info('Clipboard contains: %s', context.clipboard)
 
+
 @when('I paste the "{element_name}" field')
 def step_impl(context, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
@@ -96,6 +104,7 @@ def step_impl(context, element_name):
     element.clear()
     element.send_keys(context.clipboard)
 
+
 ##################################################################
 # This code works because of the following naming convention:
 # The buttons have an id in the html hat is the button text
@@ -104,7 +113,38 @@ def step_impl(context, element_name):
 # to get the element id of any button
 ##################################################################
 
-## UPDATE CODE HERE ##
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower().replace(' ', '_') + '-btn'
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, button_id))
+    )
+    element.click()
+
+
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, 'flash_message'))
+    )
+    assert message in element.text
+
+
+@then('I should see "{text_string}" in the results')
+def step_impl(context, text_string):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'), text_string
+        )
+    )
+    assert found
+
+
+@then('I should not see "{text_string}" in the results')
+def step_impl(context, text_string):
+    element = context.driver.find_element(By.ID, 'search_results')
+    assert text_string not in element.text
+
 
 ##################################################################
 # This code works because of the following naming convention:
@@ -122,9 +162,10 @@ def step_impl(context, text_string, element_name):
             text_string
         )
     )
-    assert(found)
+    assert found
 
-@when('I change "{element_name}" to "{text_string}"')
+
+@when('I change the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = WebDriverWait(context.driver, context.wait_seconds).until(

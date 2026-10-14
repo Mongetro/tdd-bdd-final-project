@@ -1,0 +1,5 @@
+[MASTER]
+disable=
+    duplicate-code,
+    no-member,
+    too-few-public-methods
